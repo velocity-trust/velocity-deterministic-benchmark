@@ -1,4 +1,4 @@
-Velocity ARMv8 Memory Bus Saturation Evaluation Harness
+Velocity ARMv8 Memory Bus & Cache Saturation Evaluation Harness
 A minimal, zero-dependency userspace measurement harness written in Rust to evaluate contiguous memory bus throughput under continuous cache-line invalidation on ARMv8-A (AArch64) hardware.
 1. Scope and Intellectual Property Boundary
 What This Repository Contains
