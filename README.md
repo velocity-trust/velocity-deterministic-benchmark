@@ -1,30 +1,23 @@
-Velocity Deterministic Systems Benchmark
-A bare-metal reproducible evaluation harness measuring sub-microsecond latency determinism, adversarial cache-coherency saturation, and static memory bounds on ARMv8-A silicon.
-Empirical Metrics (BCM2711 ARMv8-A Baseline)
- Median Dispatch (P50): 55 ns
- Tail Latency (P99): 56 ns
- Jitter Upper Bound (Delta): <= 1 ns
- Dynamic Heap Allocation: 0.00 bytes (Strict contiguous 16MB static .bss ring)
- Thermodynamic Ceiling: 37.7 C to 42.5 C steady-state under 100% bus saturation
-Quickstart (Reproducing Locally)
-# Clone the evaluation repository
-git clone https://github.com/[your-username]/velocity-deterministic-benchmark.git
-cd velocity-deterministic-benchmark
-
-# Compile and execute the evaluation harness in release mode
-cargo run --release
-Formal Safety & Verification
-Memory invariants and bounds verified using Coq 8.18+. Software executes in pure no-std space with dynamic malloc/free prohibited at compile time.
-Patent & Legal Notice
-Underlying microarchitectural gating methods and thermodynamic clamping mechanisms are subject to pending patent protection (USPTO Provisional Application Serial No. 64/152,589). Complete legal title is vested in Velocity Technical Infrastructure Statutory Trust (Assignment ID: 2080066). Released under Apache License 2.0 for evaluation and academic benchmarking.
-
----
-
-## Enterprise Evaluation & Architecture Advisory
-
-Velocity Technical Infrastructure Statutory Trust provides specialized consulting, custom microarchitectural determinism validation, and enterprise evaluation licensing for safety-critical, autonomous robotics, and ultra-low-latency systems.
-
-### Commercial Inquiries & Retainer Engagements
-* **Deterministic Systems Audit:** 20-hour structured architecture advisory sprint for engineering teams mitigating memory bus contention, tail latency ($P_{99}$ jitter), and instruction cache degradation on ARMv8/AArch64 platforms.
-* **Enterprise Pilots (Annex L-1):** Inquire regarding 30-day evaluation licenses, clean-room coprocessor netlist evaluations, and hardware-isolated execution enclave testing.
-* **Direct Commercial Liaison:** `contact@velocitytrust.org` / Sole Trustee Liaison
+Velocity Deterministic Systems Benchmark Harness
+A minimal, zero-allocation (⁠#![no_std]⁠) evaluation harness measuring cycle-level instruction timing and contiguous memory bus determinism on ARMv8/AArch64 silicon.
+Architecture & Focus
+￼ Target Microarchitecture: Broadcom BCM2711 (ARM Cortex-A72 @ 1.5–1.8 GHz) & AArch64 datacenter platforms (AWS Graviton).
+￼ Memory Model: Contiguous 16MB ⁠.bss⁠ static ring buffer; 0.00 bytes heap allocation (⁠alloc⁠ disabled).
+￼ Hardware Telemetry: Direct cycle-counter register reads via ⁠CNTVCT_EL0⁠ with fallback to ⁠std::time::Instant⁠ on non-ARM hosts.
+￼ Deterministic Boundary: Measures loop dispatch latency under adversarial cache-saturation memory access.
+Observed Edge Benchmarks (Raspberry Pi 4 / BCM2711)
+The following metrics represent local runs over 1,000,000 iterations on standard Raspberry Pi OS:
+￼ Latency: ￼ | ￼
+￼ Measured Loop Jitter: ￼ across iteration cycles
+￼ Operating Thermals: ￼ baseline operating envelope
+￼ Memory Allocation: 0 bytes dynamic heap
+(See ⁠results/bcm2711_run.log⁠ for raw terminal output.)
+Building & Running
+Ensure you have a modern Rust toolchain installed:
+To run the full criterion benchmark harness:
+License & IP Notice
+￼ Harness code and evaluation scripts are licensed under the Apache License, Version 2.0 (see ⁠LICENSE⁠).
+￼ Hardware architecture, coprocessor specifications, and associated statutory trust filings are referenced in ⁠NOTICE⁠.
+Contact
+For questions regarding multi-core determinism replication, Graviton test runs, or research inquiries:
+￼ Contact: Timothy Darcelien — ⁠timdarcelien@icloud.com⁠
