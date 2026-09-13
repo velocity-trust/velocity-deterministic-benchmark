@@ -6,7 +6,7 @@ authors = ["Timothy Erin Darcelien contact@velocitytrust.org"]
 description = "Bare-metal ARMv8 sub-microsecond determinism benchmark harness"
 license = "Apache-2.0"
 readme = "README.md"
-repository = "https://github.com/your-username/velocity-deterministic-benchmark"
+repository = "https://github.com/velocity-trust/velocity-deterministic-benchmark"
 keywords = ["armv8", "determinism", "no-std", "latency", "bare-metal"]
 categories = ["embedded", "hardware-support", "no-std"]
 [features]

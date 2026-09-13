@@ -1,15 +1,13 @@
 Velocity Deterministic Systems Benchmark Suite
 Copyright 2026 Velocity Technical Infrastructure Statutory Trust. All Rights Reserved.
-This product includes software and architectural specifications developed by
-Timothy Erin Darcelien and administered by Velocity Technical Infrastructure
-Statutory Trust (EIN: 42-6775439).
+SOFTWARE LICENSE:
+The software, test harnesses, and benchmarking scripts contained in this repository
+are licensed under the Apache License, Version 2.0 (see LICENSE).
 PATENT NOTICE:
-The underlying microarchitectural logic, thermodynamic clamping mechanisms,
-and deterministic memory architectures implemented or evaluated herein are the
+The underlying microarchitectural gate logic, thermodynamic clamping mechanisms,
+and hardware coprocessor architectures evaluated or referenced herein are the
 subject of pending patent protection at the United States Patent and Trademark
 Office (U.S. Provisional Patent Application Serial No. 64/152,589).
-100% undivided fee-simple legal title to the subject technology is permanently
+100% undivided fee-simple legal title to the underlying inventions is permanently
 vested in Velocity Technical Infrastructure Statutory Trust under USPTO Assignment
 Center Tracking ID: 2080066.
-Commercial integration, production silicon implementation, and enterprise datacenter
-deployments require a separate commercial pilot or licensing agreement.
