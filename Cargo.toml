@@ -2,26 +2,24 @@
 name = "velocity-deterministic-benchmark"
 version = "0.1.0"
 edition = "2021"
-authors = ["Timothy Erin Darcelien contact@velocitytrust.org"]
-description = "Bare-metal ARMv8 sub-microsecond determinism benchmark harness"
+authors = ["Velocity Technical Infrastructure Statutory Trust <timdarcelien@icloud.com>"]
+description = "Deterministic execution and memory bus benchmarking harness for ARMv8/AArch64"
 license = "Apache-2.0"
-readme = "README.md"
 repository = "https://github.com/velocity-trust/velocity-deterministic-benchmark"
-keywords = ["armv8", "determinism", "no-std", "latency", "bare-metal"]
-categories = ["embedded", "hardware-support", "no-std"]
+readme = "README.md"
+
 [features]
-default = ["std"]
+default = []
 std = []
-[[bin]]
-name = "latency_evaluator"
-path = "src/main.rs"
-[[bench]]
-name = "benchmark_harness"
-harness = false
+
 [profile.release]
 opt-level = 3
 lto = true
 codegen-units = 1
 panic = "abort"
-debug = false
-overflow-checks = false
+overflow-checks = true
+strip = true
+
+[[bench]]
+name = "benchmark_harness"
+harness = false
