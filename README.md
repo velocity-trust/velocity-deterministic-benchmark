@@ -6,7 +6,7 @@ Microarchitectural Focus & Methodology
 ￼ Timer Source & Resolution:
 ￼ Telemetry on ARMv8 is derived directly from the physical counter register ⁠CNTVCT_EL0⁠.
 ￼ Clock Base: The BCM2711 system counter clock operates at a nominal 54 MHz (~18.518 ns per tick).
-￼ Amortization: Single-digit nanosecond metrics reflect mean amortized loop dispatch across 1,000,000 contiguous iterations to account for hardware tick quantization.
+￼ Amortization: Latency metrics reflect mean amortized loop dispatch across 1,000,000 contiguous iterations to account for hardware tick quantization.
 ￼ Contention Profile: Evaluates stride determinism under deliberate cache-line invalidation and bus saturation.
 Empirical Test Conditions & Results
 Hardware Test Environment
