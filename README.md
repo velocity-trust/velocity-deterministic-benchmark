@@ -1,47 +1,47 @@
-Velocity ARMv8 Memory Bus & Cache Saturation Evaluation Harness
-A minimal, zero-dependency userspace measurement harness written in Rust to quantify contiguous memory bus throughput, cache-line invalidation recovery, and execution variance under adversarial bus saturation on ARMv8-A (AArch64) silicon.
-1. Scope, Deliverables & Intellectual Property Boundary
+Velocity ARMv8 Memory Bus Saturation Evaluation Harness
+A minimal, zero-dependency userspace measurement harness written in Rust to evaluate contiguous memory bus throughput under continuous cache-line invalidation on ARMv8-A (AArch64) hardware.
+1. Scope and Intellectual Property Boundary
 What This Repository Contains
-￼ Open Source Measurement Code (Apache 2.0): The software in this repository (⁠src/⁠, ⁠Cargo.toml⁠, and associated build configuration) is an open-source evaluation utility designed to profile memory bus throughput, cache-line invalidation recovery, and timer behavior.
-￼ Diagnostic Tooling Only: This repository consists strictly of userspace evaluation code running against standard Linux APIs and architectural CPU timer registers.
-What This Repository Does Not Contain
-￼ No Hardware RTL or Gate Logic: This codebase does not contain Verilog/VHDL netlists, coprocessor RTL, or gate-level silicon logic.
-￼ Patent Reservation: Underlying microarchitectural thermodynamic governance circuits, out-of-order execution gating registers, and coprocessor designs are proprietary intellectual property held under patent applications by Velocity Technical Infrastructure Statutory Trust. They are not disclosed, embodied, or licensed herein.
-￼ Grant Boundary: The Apache License, Version 2.0 patent license grant (Section 3) applies exclusively to the measurement harness software committed in ⁠src/⁠ and does not extend to offline hardware patent claims.
-2. Microarchitectural Methodology & Timing Limits
-Timing Source & Resolution Limits
+￼ Open Source Measurement Software (Apache 2.0): The code in this repository (⁠src/⁠, ⁠Cargo.toml⁠, and associated build configuration) is an open-source evaluation utility designed to profile memory bus throughput under continuous cache-line invalidation.
+￼ Userspace Tooling Only: This repository consists strictly of userspace software running against standard Linux APIs and architectural CPU timer registers.
+Hardware and Patent Notice
+￼ Underlying proprietary hardware architectures and circuit designs are held by Velocity Technical Infrastructure Statutory Trust under pending patent applications.
+￼ No hardware RTL, netlists, or gate-level silicon logic are disclosed or distributed in this repository.
+￼ Formal licensing terms and definitive IP covenants are governed by separate legal instruments and counsel review.
+2. Microarchitectural Methodology and Timing Limits
+Timing Source and Resolution Limits
 ￼ Register Used: Hardware timer register ⁠CNTVCT_EL0⁠ read via inline assembly (⁠mrs x0, cntvct_el0⁠).
-￼ Counter Base Frequency: On the Broadcom BCM2711, the ARM Generic Timer counter increments at a fixed nominal frequency of ￼ (￼ per tick).
-￼ Quantization & Statistical Treatment:
-￼ Because each timer tick represents ￼, sub-nanosecond jitter or fine-grained per-iteration ￼ latency distributions cannot be physically resolved by sampling this register per pass.
-￼ The harness measures elapsed ticks across a continuous batch of ￼ iterations bracketed by start and end timestamps.
-￼ Reported metrics reflect mean amortized latency per loop pass (￼), characterizing sustained memory bus throughput under saturation.
-￼ Fine-grained cycle-by-cycle tail distribution analysis (￼, ￼) requires non-virtualized access to the hardware Performance Monitor Unit cycle counter (⁠PMCCNTR_EL0⁠ at ￼ resolution), which requires an EL1 kernel driver module.
-Memory & Contention Model
-￼ Static Region: Allocates a contiguous ￼ static ⁠.bss⁠ ring buffer to ensure accesses exceed the ￼ shared L2 cache of the Cortex-A72.
+￼ Counter Base Frequency: On the Broadcom BCM2711, the ARM Generic Timer counter increments at a fixed nominal frequency of 54 MHz (~18.518 ns per tick).
+￼ Quantization and Statistical Scope:
+￼ Because each timer tick represents ~18.518 ns, fine-grained sub-nanosecond jitter or cycle-by-cycle tail latency distributions (P99, P99.9) cannot be physically resolved by sampling this register per pass.
+￼ The harness measures elapsed ticks across a continuous batch of 1,000,000 iterations bracketed by start and end timestamps.
+￼ Reported metrics reflect mean amortized latency per loop pass (total elapsed ticks / 1,000,000), characterizing sustained memory bus throughput under saturation.
+￼ Fine-grained cycle-by-cycle tail distribution analysis requires non-virtualized access to the hardware Performance Monitor Unit cycle counter (⁠PMCCNTR_EL0⁠ at 1.8 GHz ~ 0.55 ns resolution), which requires an EL1 kernel driver module.
+Memory and Contention Model
+￼ Static Buffer: Allocates a contiguous 16 MB static ⁠.bss⁠ ring buffer to ensure accesses exceed the 1 MB shared L2 cache of the Cortex-A72.
 ￼ Runtime Allocation: Zero dynamic heap requests (⁠malloc⁠/⁠alloc⁠) occur during active measurement loops.
-￼ Runtime Standard Library: The Rust standard library (⁠std⁠) is utilized solely for command-line parsing, initial environment setup, and timer fallback on non-ARM host architectures.
-￼ Access Pattern: Strided read/write traversals across the ring buffer designed to enforce deterministic cache-line evictions and stress the memory bus.
-3. Empirical Test Environment & Baseline Telemetry
-Hardware & Operating System Configuration
+￼ Standard Library Runtime: The Rust standard library (⁠std⁠) is utilized solely for command-line parsing, initial environment setup, and timer fallback on non-ARM host architectures.
+￼ Access Pattern: Strided traversals across the buffer designed to induce continuous L1/L2 cache evictions and stress the memory bus.
+3. Empirical Test Environment and Baseline Telemetry
+Hardware and Operating System Configuration
 Empirical Measurements (Broadcom BCM2711)
-1. Amortized Saturation Batch (￼ Iterations)
-￼ Total Batch Wall Time: ￼
-￼ Hardware Timer Ticks Elapsed: ￼ (@ ￼)
-￼ Mean Amortized Access Latency: ￼ (￼ per cache-line dispatch)
-￼ Microarchitectural Interpretation: The observed ￼ mean latency reflects the physical LPDDR4 DRAM random access load-to-use floor following deterministic L1/L2 cache misses on the BCM2711 memory controller.
-2. Thermal Envelope (Separate 60-Second Continuous Soak)
-￼ Start Core Temperature: ￼
-￼ End Core Temperature: ￼
-￼ Thermal Delta: ￼ under active dual-fan cooling over a sustained 60-second saturation loop.
+1. Amortized Saturation Batch (1,000,000 Iteration Batch)
+￼ Total Batch Wall Time: ~55.24 ms
+￼ Hardware Timer Ticks Elapsed: ~2,983,000 ticks (@ 54 MHz)
+￼ Mean Amortized Access Latency: ~55.2 ns (~2.98 timer ticks per cache-line dispatch)
+￼ Microarchitectural Context: The observed ~55.2 ns mean access duration aligns with typical LPDDR4 DRAM random access latency following deterministic L1/L2 cache misses on the BCM2711 memory controller.
+2. Thermal Profile (Separate 60-Second Continuous Soak)
+￼ Start Core Temperature: 38.0 C
+￼ End Core Temperature: 41.8 C
+￼ Thermal Delta: +3.8 C over a sustained 60-second saturation loop under active dual-fan cooling.
 (Raw execution log archived in ⁠results/bcm2711_run.log⁠.)
-4. Building & Execution
+4. Building and Execution
 Prerequisites
 Install the stable Rust toolchain for AArch64:
 Build and Run
 5. Continuous Integration
-Automated compilation and format verification are maintained via GitHub Actions across standard AArch64 and x86_64 runners:
+Automated compilation and format verification are maintained via GitHub Actions:
 ￼ Workflow configuration: ⁠.github/workflows/ci.yml⁠.
-6. Research & Technical Correspondence
-For inquiries regarding replication logs, cross-compilation on ARMv8 server platforms (such as AWS Graviton), or microarchitectural collaboration:
+6. Research and Technical Correspondence
+For inquiries regarding replication logs, cross-compilation on ARMv8 server platforms, or microarchitectural collaboration:
 ￼ Timothy Darcelien — ⁠timdarcelien@icloud.com⁠
