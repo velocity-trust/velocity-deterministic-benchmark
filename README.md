@@ -81,7 +81,7 @@ fails.
 
 ### Kernel configuration
 
-Linux `6.6.20+rpt-rpi-v8` (Debian aarch64), running under standard
+Linux `6.18.34+rpt-rpi-v8` (Debian aarch64), running under standard
 `CONFIG_PREEMPT` — soft real-time desktop preemption.
 
 **This is not a hard real-time `CONFIG_PREEMPT_RT` kernel.** Core isolation
@@ -100,18 +100,18 @@ All figures in nanoseconds per pass, 1,000,000 iterations, 11 batches.
 
 | Mode | min | median | max |
 |---|---:|---:|---:|
-| 1. Batch-bracketed, write + read | 50.28 | **50.39** | 55.68 |
-| 2. Batch-bracketed, read only | 15.23 | **15.77** | 16.08 |
-| 3. Timer overhead (2 counter reads) | 27.23 | **27.24** | 27.27 |
-| 4. Per-iteration, `isb` only | 27.61 | 27.74 | 29.11 |
-| 5. Per-iteration, `dsb sy` | 194.05 | 194.91 | 196.05 |
+| 1. Batch-bracketed, write + read | 47.84 | **50.74** | 55.75 |
+| 2. Batch-bracketed, read only | 15.20 | **15.76** | 15.92 |
+| 3. Timer overhead (2 counter reads) | 27.22 | **27.26** | 27.31 |
+| 4. Per-iteration, `isb` only | 27.52 | 27.63 | 30.16 |
+| 5. Per-iteration, `dsb sy` | 193.09 | 193.85 | 194.81 |
 
 **Heap allocated during measurement: 0 bytes** (counted, not asserted).
 
 ### Read versus write cost
 
-A write + read pass costs **34.63 ns more** than a read-only pass (50.39 vs
-15.77). The difference is read-for-ownership on the store plus the eventual
+A write + read pass costs **34.98 ns more** than a read-only pass (50.74 vs
+15.76). The difference is read-for-ownership on the store plus the eventual
 dirty-line writeback — roughly 3.2x the cost of a load on this memory
 controller.
 
@@ -123,7 +123,7 @@ independent clock source. Compiled with `gcc -O2`:
 
 | Pattern | C (`CLOCK_MONOTONIC`) | Rust (`CNTVCT_EL0`) |
 |---|---:|---:|
-| Linear 64 B stride, read only | 16.05 | 15.77 |
+| Linear 64 B stride, read only | 16.05 | 15.76 |
 
 Agreement within 2 percent across two independent measurement paths. The Rust
 harness carries no measurable overhead relative to naive C.
@@ -162,10 +162,10 @@ iteration rather than per batch. It cannot, and the failure mode is instructive.
 Subtracting the measured timer overhead (mode 3) from each instrumented mode
 gives the per-pass cost each one implies:
 
-| Timing approach | Implied cost | Error vs. batch (50.39) |
+| Timing approach | Implied cost | Error vs. batch (50.74) |
 |---|---:|---|
-| `isb` only | **0.50 ns** | 100x undercount |
-| `dsb sy` | **167.66 ns** | 3.3x overcount |
+| `isb` only | **0.37 ns** | 137x undercount |
+| `dsb sy` | **166.59 ns** | 3.3x overcount |
 
 Neither is close, and the error changes sign depending on the barrier.
 
@@ -178,12 +178,12 @@ access completes. That closes the leak but destroys the inter-iteration overlap
 that real code depends on, so the result measures a fully serialized access plus
 the barrier itself.
 
-The batch-bracketed figure of 50.39 ns is correct precisely *because*
+The batch-bracketed figure of 50.74 ns is correct precisely *because*
 consecutive iterations overlap in the memory pipeline, which is how the hardware
 actually behaves under load.
 
-Note also that mode 5 has the tightest spread of any mode (194.05 to 196.05, about
-1 percent) while mode 1 spans 50.28 to 55.68. The most apparently "deterministic"
+Note also that mode 5 has the tightest spread of any mode (193.09 to 194.81, about
+1 percent) while mode 1 spans 47.84 to 55.75. The most apparently "deterministic"
 configuration here is the least representative one — the barrier suppresses
 variance by suppressing the overlap that causes it.
 
