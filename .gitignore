@@ -28,3 +28,8 @@ s_tier
 netlists/
 rtl_proprietary/
 proofs/
+
+target/
+null_test
+null_test2
+*.bak
