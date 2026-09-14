@@ -1,16 +1,3 @@
-//! Velocity ARMv8 memory bus evaluation harness.
-//!
-//! Five modes:
-//!   1. batch write+read   - two timer reads total. Honest per-pass cost.
-//!   2. batch read-only    - same, loads only. Comparable to the C null test.
-//!   3. timer overhead     - two counter reads per iteration, no memory work.
-//!   4. instrumented isb   - legacy design: isb + mrs around each pass.
-//!   5. instrumented dsb   - same, but dsb sy before the closing read so
-//!                           outstanding stores must complete inside the window.
-//!
-//! If (5) - (3) lands near (1) while (4) sits below (1), stores escaping the
-//! measured window is the explanation for the legacy undercount.
-
 use std::alloc::{GlobalAlloc, Layout, System};
 use std::sync::atomic::{AtomicUsize, Ordering};
 
