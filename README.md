@@ -14,7 +14,7 @@ reproducible with the commands in section 6.
 ### What this repository contains
 
 - **Open source measurement software (Apache 2.0).** The code in `src/`,
-  `benches/`, `null_test.c`, and the associated build configuration is an
+  `benches/`, `null_test.c`, `null_test2.c`, and the associated build configuration is an
   evaluation utility for profiling memory bus throughput under strided access.
 - **Userspace tooling only.** Everything here runs against standard Linux APIs
   and architectural CPU timer registers.
@@ -130,7 +130,7 @@ harness carries no measurable overhead relative to naive C.
 
 ### DRAM random access floor
 
-`null_test.c` also runs a randomized pointer chase over the full 16 MB buffer
+`null_test2.c` runs a randomized pointer chase over the full 16 MB buffer
 (Sattolo single-cycle permutation, one node per cache line), which defeats the
 hardware prefetcher:
 
@@ -206,7 +206,7 @@ rustup target add aarch64-unknown-linux-gnu
 ```
 cargo build --release
 echo performance | sudo tee /sys/devices/system/cpu/cpu*/cpufreq/scaling_governor
-sudo taskset -c 3 ./target/release/velocity-deterministic-benchmark
+sudo taskset -c 3 ./target/release/velocity-membus-benchmark
 ```
 
 ### C cross-validation
