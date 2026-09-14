@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "If you use this harness or its measured baselines, please cite it as below."
+title: "Velocity ARMv8 Memory Bus Evaluation Harness"
+abstract: >-
+  A zero-allocation userspace harness for measuring contiguous memory bus
+  throughput on ARMv8-A (AArch64), with cross-validation against an independent
+  C implementation, and an empirical demonstration that per-iteration timing of
+  sub-100 ns memory operations using CNTVCT_EL0 is unsound in both directions
+  depending on barrier choice.
+authors:
+  - family-names: "Darcelien"
+    given-names: "Timothy"
+    affiliation: "Velocity Technical Infrastructure Statutory Trust"
+version: "0.1.0"
+date-released: "2026-09-14"
+url: "https://github.com/velocity-trust/velocity-membus-benchmark"
+repository-code: "https://github.com/velocity-trust/velocity-membus-benchmark"
+license: "Apache-2.0"
+keywords:
+  - aarch64
+  - armv8
+  - cortex-a72
+  - bcm2711
+  - memory-bus
+  - benchmarking
+  - microarchitecture
